@@ -1,3 +1,5 @@
+import java.util.Comparator;
+import java.util.OptionalInt;
 import java.util.Vector;
 
 public class LongestCommonPrefix {
@@ -40,5 +42,34 @@ public class LongestCommonPrefix {
             return exampleVector.get(0).substring(0,prefixIndex);
         }
         return "";
+    }
+
+    public static String findLongestCommonPrefixUsingStream(Vector<String> exampleVector) {
+
+        OptionalInt smallestStringSize = exampleVector.stream()
+                .mapToInt(String::length)
+                .min();
+
+        int endPrefixIndex = 1;
+        String commonPrefix = "";
+
+        while(endPrefixIndex < smallestStringSize.getAsInt()) {
+            String testPrefix = exampleVector.get(0).substring(0,endPrefixIndex);
+
+            if(isPrefixCommon(exampleVector, testPrefix)) {
+                endPrefixIndex++;
+                commonPrefix = testPrefix;
+            } else {
+                endPrefixIndex = smallestStringSize.getAsInt();
+            }
+        }
+
+        return commonPrefix ;
+    }
+
+    private static boolean isPrefixCommon(Vector<String> vector, String testPrefix) {
+        return vector
+                    .stream()
+                    .allMatch(s -> s.substring(0, testPrefix.length()).equals(testPrefix));
     }
 }
